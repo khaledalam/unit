@@ -34,8 +34,11 @@ composer require khaledalam/unit
 
 ```php
 <?php
+// test.php
 
 // __construct(string $name, Name|string $symbol, float $factor, Dimension $dimension)
+
+require __DIR__ . '/vendor/autoload.php';
 
 use KhaledAlam\Unit\Unit;
 use KhaledAlam\Unit\Name;
@@ -58,6 +61,11 @@ $sum = $length1->add($length2); // Result: 3.0 m
 echo $sum; // "3 m"
 
 ?>
+```
+output:
+```bash
+% php main.php
+3 m
 ```
 
 ---

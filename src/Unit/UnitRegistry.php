@@ -4,7 +4,7 @@ namespace KhaledAlam\Unit;
 
 use KhaledAlam\Unit\Unit;
 
-class UnitRegistry
+final class UnitRegistry
 {
     /** @var array<string, Unit> */
     private static array $units = [];
