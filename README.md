@@ -37,7 +37,7 @@ composer require khaledalam/unit
 
 // __construct(string $name, Name|string $symbol, float $factor, Dimension $dimension)
 
-use KhaledAlam\Unit;
+use KhaledAlam\Unit\Unit;
 use KhaledAlam\Unit\Name;
 use KhaledAlam\Unit\Dimension;
 use KhaledAlam\Unit\Quantity;

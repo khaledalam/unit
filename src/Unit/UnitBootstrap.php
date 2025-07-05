@@ -1,7 +1,7 @@
 <?php
 
 use KhaledAlam\Unit\Dimension;  
-use KhaledAlam\Unit;
+use KhaledAlam\Unit\Unit;
 use KhaledAlam\Unit\UnitRegistry;
 use KhaledAlam\Unit\Name;
 

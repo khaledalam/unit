@@ -4,7 +4,7 @@ Quantity::add()
 <?php
 require_once __DIR__ . '/../include.inc';
 
-use KhaledAlam\Unit;
+use KhaledAlam\Unit\Unit;
 use KhaledAlam\Unit\Name;
 use KhaledAlam\Unit\Dimension;
 use KhaledAlam\Unit\Quantity;

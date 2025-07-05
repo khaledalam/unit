@@ -5,7 +5,7 @@ Quantity::subtract()
 require_once __DIR__ . '/../include.inc';
 
 use KhaledAlam\Unit\Quantity;
-use KhaledAlam\Unit;
+use KhaledAlam\Unit\Unit;
 use KhaledAlam\Unit\UnitRegistry;
 use KhaledAlam\Unit\Name;
 use KhaledAlam\Unit\Dimension;

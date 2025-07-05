@@ -2,7 +2,7 @@
 
 namespace KhaledAlam\Unit;
 
-use KhaledAlam\Unit;
+use KhaledAlam\Unit\Unit;
 
 class UnitRegistry
 {

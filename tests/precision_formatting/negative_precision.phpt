@@ -4,7 +4,7 @@ Quantity: throws exception on negative precision
 <?php
 
 use KhaledAlam\Unit\Quantity;
-use KhaledAlam\Unit;
+use KhaledAlam\Unit\Unit;
 use KhaledAlam\Unit\Name;
 use KhaledAlam\Unit\Dimension;
 use KhaledAlam\Unit\UnitRegistry;

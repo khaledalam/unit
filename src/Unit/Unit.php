@@ -1,6 +1,6 @@
 <?php
 
-namespace KhaledAlam;
+namespace KhaledAlam\Unit;
 
 use KhaledAlam\Unit\Dimension; 
 use KhaledAlam\Unit\Name;

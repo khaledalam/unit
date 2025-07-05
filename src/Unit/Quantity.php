@@ -3,7 +3,7 @@
 namespace KhaledAlam\Unit;
 
 use KhaledAlam\Unit\UnitRegistry;
-use KhaledAlam\Unit;
+use KhaledAlam\Unit\Unit;
 
 final readonly class Quantity
 {
@@ -16,7 +16,7 @@ final readonly class Quantity
         if ($precision !== null && $precision < 0) {
             throw new \InvalidArgumentException("Precision must be >= 0.");
         }
-        
+
         $this->value = $value;
         $this->unit = $unit;
         $this->precision = $precision;
