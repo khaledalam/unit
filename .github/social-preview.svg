@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" font-family="'SF Pro Display','Segoe UI',Helvetica,Arial,sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1b2a"/>
+      <stop offset="1" stop-color="#1b263b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5eead4"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <rect width="1280" height="8" fill="url(#accent)"/>
+
+  <!-- Title -->
+  <text x="90" y="180" fill="#ffffff" font-size="104" font-weight="800" letter-spacing="-2">Unit</text>
+  <text x="90" y="248" fill="#94a3b8" font-size="34" font-weight="500">Type-safe units, quantities &amp; dimensional analysis for PHP</text>
+
+  <!-- Code card -->
+  <rect x="90" y="300" width="1100" height="210" rx="18" fill="#0b1220" stroke="#1e293b" stroke-width="2"/>
+  <text x="126" y="360" font-family="'SF Mono','Fira Code',Menlo,monospace" font-size="30" fill="#e2e8f0">
+    <tspan fill="#7dd3fc">Quantity</tspan>::<tspan fill="#5eead4">of</tspan>(2, <tspan fill="#fca5a5">'m'</tspan>)-&gt;<tspan fill="#5eead4">add</tspan>(<tspan fill="#7dd3fc">Quantity</tspan>::<tspan fill="#5eead4">of</tspan>(100, <tspan fill="#fca5a5">'cm'</tspan>)); <tspan fill="#64748b">// 3 m</tspan>
+  </text>
+  <text x="126" y="416" font-family="'SF Mono','Fira Code',Menlo,monospace" font-size="30" fill="#e2e8f0">
+    <tspan fill="#7dd3fc">Quantity</tspan>::<tspan fill="#5eead4">of</tspan>(100, <tspan fill="#fca5a5">'°C'</tspan>)-&gt;<tspan fill="#5eead4">to</tspan>(<tspan fill="#fca5a5">'°F'</tspan>); <tspan fill="#64748b">// 212 °F</tspan>
+  </text>
+  <text x="126" y="472" font-family="'SF Mono','Fira Code',Menlo,monospace" font-size="30" fill="#e2e8f0">
+    <tspan fill="#7dd3fc">Quantity</tspan>::<tspan fill="#5eead4">of</tspan>(4, <tspan fill="#fca5a5">'m'</tspan>)-&gt;<tspan fill="#5eead4">multiply</tspan>(<tspan fill="#7dd3fc">Quantity</tspan>::<tspan fill="#5eead4">of</tspan>(3, <tspan fill="#fca5a5">'m'</tspan>)); <tspan fill="#64748b">// 12 m²</tspan>
+  </text>
+
+  <!-- Feature pills -->
+  <g font-size="24" font-weight="600">
+    <rect x="90" y="548" width="290" height="52" rx="26" fill="#132a3a"/>
+    <text x="120" y="582" fill="#5eead4">✓ Zero-config install</text>
+
+    <rect x="404" y="548" width="270" height="52" rx="26" fill="#132a3a"/>
+    <text x="434" y="582" fill="#5eead4">✓ Immutable &amp; typed</text>
+
+    <rect x="698" y="548" width="330" height="52" rx="26" fill="#132a3a"/>
+    <text x="728" y="582" fill="#5eead4">✓ Dimensional analysis</text>
+  </g>
+
+  <!-- Handle -->
+  <text x="1190" y="600" text-anchor="end" fill="#475569" font-size="24" font-weight="500">github.com/khaledalam/unit</text>
+</svg>
