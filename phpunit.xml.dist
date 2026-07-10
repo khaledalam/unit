@@ -3,11 +3,16 @@
     <testsuites>
         <testsuite name="unit">
             <directory suffix=".phpt">tests</directory>
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <exclude>
+            <!-- Autoload-files shim: runs before coverage starts, so it can never be counted. -->
+            <file>src/Unit/bootstrap.php</file>
+        </exclude>
     </source>
 </phpunit>

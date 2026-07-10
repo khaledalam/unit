@@ -135,19 +135,19 @@ final readonly class Quantity implements Stringable, JsonSerializable
             return $this;
         }
 
+        $base = $this->toBase();
         foreach (self::humanizeLadders() as $symbols) {
-            if (!UnitRegistry::has($symbols[0])) {
+            $registered = array_values(array_filter($symbols, UnitRegistry::has(...)));
+            if ($registered === []) {
                 continue;
             }
-            if (!UnitRegistry::get($symbols[0])->dimension->equals($this->unit->dimension)) {
+            if (!UnitRegistry::get($registered[0])->dimension->equals($this->unit->dimension)) {
                 continue;
             }
 
-            $base = $this->toBase();
-            $chosen = $symbols[0];
-            foreach ($symbols as $symbol) {
-                $candidate = UnitRegistry::get($symbol);
-                if (abs($base / $candidate->factor) >= 1.0) {
+            $chosen = $registered[0];
+            foreach ($registered as $symbol) {
+                if (abs($base / UnitRegistry::get($symbol)->factor) >= 1.0) {
                     $chosen = $symbol;
                 } else {
                     break;
