@@ -34,6 +34,31 @@ final readonly class Quantity implements Stringable, JsonSerializable
         return self::from($value, $symbol, $precision);
     }
 
+    /**
+     * Parse a human-readable string into a Quantity.
+     *
+     * Supports single values ("100 km/h", "-40 °C") and multi-segment inputs of
+     * the same dimension ("5 ft 3 in"), which are summed. The result is expressed
+     * in the first segment's unit.
+     *
+     * @throws \InvalidArgumentException on empty input, unknown units, or mixed dimensions.
+     */
+    public static function parse(string $input, ?int $precision = null): self
+    {
+        if (!preg_match_all('/([+-]?\d+(?:\.\d+)?)\s*([^\s\d]+)/u', $input, $matches, PREG_SET_ORDER)) {
+            throw new \InvalidArgumentException("Could not parse a quantity from: \"{$input}\".");
+        }
+
+        $result = null;
+        foreach ($matches as [, $value, $symbol]) {
+            $part = self::from((float) $value, $symbol);
+            $result = $result === null ? $part : $result->add($part);
+        }
+
+        /** @var self $result */
+        return $precision === null ? $result : $result->withPrecision($precision);
+    }
+
     public function convertTo(string $symbol): self
     {
         $target = UnitRegistry::get($symbol);
