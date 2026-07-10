@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unit — Type-safe units & dimensional analysis for PHP</title>
+<meta name="description" content="A lightweight, immutable, type-safe PHP library for quantities, units, and dimensional analysis. Try the live converter.">
+<meta property="og:title" content="Unit — Type-safe units for PHP">
+<meta property="og:description" content="Zero-config units, quantities & dimensional analysis for PHP. Try it live.">
+<style>
+  :root{
+    --bg:#0d1b2a; --bg2:#0b1220; --card:#111f31; --line:#1e293b;
+    --fg:#e2e8f0; --muted:#94a3b8; --accent:#5eead4; --accent2:#38bdf8;
+    --kw:#7dd3fc; --fn:#5eead4; --str:#fca5a5; --com:#64748b;
+  }
+  :root[data-theme="light"]{
+    --bg:#f1f5f9; --bg2:#e2e8f0; --card:#ffffff; --line:#e2e8f0;
+    --fg:#0f172a; --muted:#475569; --accent:#0d9488; --accent2:#0284c7;
+    --kw:#0369a1; --fn:#0d9488; --str:#b91c1c; --com:#64748b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'SF Pro Display','Segoe UI',Helvetica,Arial,sans-serif;
+    background:linear-gradient(160deg,var(--bg),var(--bg2));color:var(--fg);
+    -webkit-font-smoothing:antialiased;min-height:100vh}
+  code,pre,.mono{font-family:'SF Mono','Fira Code',Menlo,monospace}
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px}
+  header{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+  .brand{font-size:26px;font-weight:800;letter-spacing:-.5px}
+  .brand .dot{color:var(--accent)}
+  nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-size:15px;font-weight:600}
+  nav a:hover{color:var(--fg)}
+  .themeBtn{background:var(--card);border:1px solid var(--line);color:var(--fg);
+    border-radius:10px;padding:7px 11px;cursor:pointer;margin-left:18px;font-size:14px}
+  .hero{text-align:center;padding:46px 0 30px}
+  .hero h1{font-size:clamp(38px,6vw,64px);font-weight:800;letter-spacing:-2px;margin:0 0 12px}
+  .hero p{font-size:clamp(17px,2.4vw,21px);color:var(--muted);margin:0 auto;max-width:640px;line-height:1.5}
+  .pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0}
+  .pill{background:var(--card);border:1px solid var(--line);color:var(--accent);
+    border-radius:999px;padding:7px 15px;font-size:14px;font-weight:600}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:8px}
+  .btn{border-radius:12px;padding:12px 22px;font-weight:700;font-size:15px;text-decoration:none;
+    display:inline-block;border:1px solid transparent}
+  .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#04212a}
+  .btn.ghost{border-color:var(--line);color:var(--fg);background:var(--card)}
+  section{margin:44px 0}
+  h2{font-size:26px;font-weight:800;letter-spacing:-.5px;margin:0 0 6px}
+  .sub{color:var(--muted);margin:0 0 22px;font-size:15px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+  .demo-grid{display:grid;grid-template-columns:1fr;gap:18px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+  .field{display:flex;flex-direction:column;gap:6px;flex:1;min-width:120px}
+  label{font-size:13px;color:var(--muted);font-weight:600}
+  input,select{background:var(--bg2);border:1px solid var(--line);color:var(--fg);
+    border-radius:10px;padding:11px 12px;font-size:15px;font-family:inherit}
+  input:focus,select:focus{outline:2px solid var(--accent2);outline-offset:0}
+  .result{margin-top:18px;padding:16px 18px;border-radius:12px;background:var(--bg2);
+    border:1px solid var(--line);display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .result .val{font-size:28px;font-weight:800}
+  .result .val.err{color:var(--str);font-size:17px;font-weight:600}
+  .snippet{margin-top:14px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;
+    padding:14px 16px;overflow-x:auto}
+  pre{margin:0;font-size:14.5px;line-height:1.6;white-space:pre}
+  .kw{color:var(--kw)}.fn{color:var(--fn)}.str{color:var(--str)}.com{color:var(--com)}
+  .tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+  .tab{background:var(--bg2);border:1px solid var(--line);color:var(--muted);border-radius:10px;
+    padding:8px 14px;font-weight:600;cursor:pointer;font-size:14px}
+  .tab.active{color:#04212a;background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent}
+  .feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .feat .card h3{margin:0 0 6px;font-size:17px}
+  .feat .card p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.5}
+  footer{text-align:center;color:var(--muted);font-size:14px;padding:40px 0 60px;border-top:1px solid var(--line);margin-top:40px}
+  footer a{color:var(--accent2);text-decoration:none}
+  .copy{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;
+    padding:6px 10px;font-size:13px;cursor:pointer}
+  .copy:hover{color:var(--fg)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">Unit<span class="dot">.</span></div>
+    <nav>
+      <a href="#demo">Demo</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/khaledalam/unit">GitHub</a>
+      <button class="themeBtn" id="themeBtn" aria-label="Toggle theme">🌙</button>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1>Type-safe units for PHP</h1>
+    <p>A lightweight, immutable library for <b>quantities</b>, <b>units</b>, and <b>dimensional analysis</b>. It converts automatically, blocks nonsense math, and works the moment you install it.</p>
+    <div class="pills">
+      <span class="pill">✓ Zero-config install</span>
+      <span class="pill">✓ Immutable &amp; typed</span>
+      <span class="pill">✓ Affine °C/°F/K</span>
+      <span class="pill">✓ PHPStan level max</span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="#demo">Try the live demo</a>
+      <a class="btn ghost" href="https://packagist.org/packages/khaledalam/unit">View on Packagist</a>
+    </div>
+  </div>
+
+  <!-- ============ LIVE DEMO ============ -->
+  <section id="demo">
+    <h2>Live converter</h2>
+    <p class="sub">Runs in your browser using the same factors &amp; offsets as the PHP library. The PHP snippet updates as you type.</p>
+    <div class="card">
+      <div class="tabs" id="dimTabs"></div>
+      <div class="demo-grid">
+        <div class="row">
+          <div class="field" style="flex:0 0 130px">
+            <label for="val">Value</label>
+            <input id="val" type="number" value="100" step="any">
+          </div>
+          <div class="field">
+            <label for="from">From</label>
+            <select id="from"></select>
+          </div>
+          <div class="field">
+            <label for="to">To</label>
+            <select id="to"></select>
+          </div>
+        </div>
+      </div>
+      <div class="result">
+        <div>
+          <label>Result</label>
+          <div class="val" id="out">—</div>
+        </div>
+        <button class="copy" id="copyPhp">Copy PHP</button>
+      </div>
+      <div class="snippet"><pre id="php"></pre></div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURES ============ -->
+  <section>
+    <h2>What it does</h2>
+    <p class="sub">Small surface, real guarantees.</p>
+    <div class="feat">
+      <div class="card"><h3>Automatic conversion</h3><p>Add centimeters to meters and get the right answer — the library converts through a common base unit.</p></div>
+      <div class="card"><h3>Dimension safety</h3><p><span class="mono">m + s</span> throws instead of returning garbage. Mistakes fail loudly at the call site.</p></div>
+      <div class="card"><h3>Correct temperature</h3><p>°C, °F, and K use affine scales (factor + offset), so conversions are accurate — not a naive multiplier.</p></div>
+      <div class="card"><h3>Derived units</h3><p>Multiply and divide quantities to get <span class="mono">m/s</span>, <span class="mono">m²</span>, and more, with dimensions tracked.</p></div>
+      <div class="card"><h3>Immutable</h3><p>Every operation returns a new <span class="mono">Quantity</span>. No hidden mutation, safe to share.</p></div>
+      <div class="card"><h3>Zero dependencies</h3><p>Pure PHP 8.2+, PHPStan level max, tested on 8.2/8.3/8.4.</p></div>
+    </div>
+  </section>
+
+  <!-- ============ INSTALL ============ -->
+  <section id="install">
+    <h2>Install</h2>
+    <p class="sub">One command. Common units are ready immediately.</p>
+    <div class="snippet"><pre>composer require khaledalam/unit</pre></div>
+    <div class="snippet" style="margin-top:14px"><pre><span class="kw">use</span> KhaledAlam\Unit\Quantity;
+
+<span class="fn">echo</span> Quantity::<span class="fn">of</span>(<span class="str">2</span>, <span class="str">'m'</span>)-&gt;<span class="fn">add</span>(Quantity::<span class="fn">of</span>(<span class="str">100</span>, <span class="str">'cm'</span>))-&gt;<span class="fn">to</span>(<span class="str">'m'</span>);  <span class="com">// "3 m"</span>
+<span class="fn">echo</span> Quantity::<span class="fn">of</span>(<span class="str">100</span>, <span class="str">'°C'</span>)-&gt;<span class="fn">to</span>(<span class="str">'°F'</span>);                            <span class="com">// "212 °F"</span>
+<span class="fn">echo</span> Quantity::<span class="fn">of</span>(<span class="str">4</span>, <span class="str">'m'</span>)-&gt;<span class="fn">multiply</span>(Quantity::<span class="fn">of</span>(<span class="str">3</span>, <span class="str">'m'</span>));       <span class="com">// "12 m²"</span></pre></div>
+  </section>
+
+  <footer>
+    Built by <a href="https://khaledalam.net/">Khaled Alam</a> ·
+    <a href="https://github.com/khaledalam/unit">GitHub</a> ·
+    <a href="https://packagist.org/packages/khaledalam/unit">Packagist</a> ·
+    MIT License
+  </footer>
+</div>
+
+<script>
+// Mirror of src/Unit/bootstrap.php — factor to base, plus affine offset for temperature.
+const DIMS = {
+  Length: { base:'m', units:{ mm:[0.001,0], cm:[0.01,0], m:[1,0], km:[1000,0], in:[0.0254,0], ft:[0.3048,0] } },
+  Mass:   { base:'kg', units:{ mg:[1e-6,0], g:[0.001,0], kg:[1,0] } },
+  Time:   { base:'s', units:{ s:[1,0], min:[60,0], h:[3600,0] } },
+  Area:   { base:'m²', units:{ 'cm²':[0.0001,0], 'm²':[1,0] } },
+  Volume: { base:'m³', units:{ mL:[1e-6,0], L:[0.001,0], 'm³':[1,0] } },
+  Temperature:{ base:'K', units:{ '°C':[1,273.15], '°F':[5/9, 273.15-(32*5/9)], K:[1,0] } },
+};
+const DEFAULTS = { Length:['m','cm'], Mass:['kg','g'], Time:['h','s'], Area:['m²','cm²'], Volume:['L','mL'], Temperature:['°C','°F'] };
+
+const $ = id => document.getElementById(id);
+let dim = 'Length';
+
+function fmt(n){
+  if(!isFinite(n)) return String(n);
+  const r = Math.round(n*1e6)/1e6;
+  return String(r);
+}
+function convert(val, from, to){
+  const u = DIMS[dim].units;
+  const [ff,fo] = u[from], [tf,to_] = u[to];
+  const base = val*ff + fo;          // to base
+  return (base - to_) / tf;          // from base to target
+}
+function buildTabs(){
+  const t = $('dimTabs'); t.innerHTML='';
+  Object.keys(DIMS).forEach(d=>{
+    const b=document.createElement('button');
+    b.className='tab'+(d===dim?' active':''); b.textContent=d;
+    b.onclick=()=>{ dim=d; buildTabs(); buildUnits(); update(); };
+    t.appendChild(b);
+  });
+}
+function buildUnits(){
+  const from=$('from'), to=$('to'); from.innerHTML=''; to.innerHTML='';
+  Object.keys(DIMS[dim].units).forEach(sym=>{
+    from.appendChild(new Option(sym,sym));
+    to.appendChild(new Option(sym,sym));
+  });
+  const [df,dt]=DEFAULTS[dim]; from.value=df; to.value=dt;
+}
+function update(){
+  const val=parseFloat($('val').value); const from=$('from').value, to=$('to').value;
+  const out=$('out'), php=$('php');
+  if(isNaN(val)){ out.textContent='—'; out.className='val'; php.innerHTML=''; return; }
+  const res=convert(val,from,to);
+  out.textContent=fmt(res)+' '+to; out.className='val';
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  php.innerHTML =
+    '<span class="fn">echo</span> Quantity::<span class="fn">of</span>('+esc(fmt(val))+
+    ', <span class="str">\''+esc(from)+'\'</span>)-&gt;<span class="fn">to</span>(<span class="str">\''+esc(to)+
+    '\'</span>);  <span class="com">// "'+esc(fmt(res))+' '+esc(to)+'"</span>';
+}
+$('val').addEventListener('input',update);
+$('from').addEventListener('change',update);
+$('to').addEventListener('change',update);
+$('copyPhp').addEventListener('click',()=>{
+  const val=fmt(parseFloat($('val').value)||0), from=$('from').value, to=$('to').value;
+  navigator.clipboard.writeText(`Quantity::of(${val}, '${from}')->to('${to}');`);
+  $('copyPhp').textContent='Copied!'; setTimeout(()=>$('copyPhp').textContent='Copy PHP',1200);
+});
+// Theme toggle
+const tb=$('themeBtn');
+tb.addEventListener('click',()=>{
+  const cur=document.documentElement.getAttribute('data-theme');
+  const next=cur==='dark'?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  tb.textContent=next==='dark'?'🌙':'☀️';
+});
+buildTabs(); buildUnits(); update();
+</script>
+</body>
+</html>
