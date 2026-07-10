@@ -2,8 +2,8 @@
 
 [![Latest Stable Version](https://poser.pugx.org/khaledalam/unit/v)](https://packagist.org/packages/khaledalam/unit)
 [![Total Downloads](https://poser.pugx.org/khaledalam/unit/downloads)](https://packagist.org/packages/khaledalam/unit)
-[![Push](https://github.com/KhaledAlam/Unit/actions/workflows/push.yml/badge.svg)](https://github.com/KhaledAlam/Unit/actions/workflows/push.yml)
-[![codecov](https://codecov.io/gh/KhaledAlam/Unit/graph/badge.svg?token=4MIM2LRPRD)](https://codecov.io/gh/KhaledAlam/Unit)
+[![Push](https://github.com/khaledalam/unit/actions/workflows/push.yml/badge.svg)](https://github.com/khaledalam/unit/actions/workflows/push.yml)
+[![codecov](https://codecov.io/gh/khaledalam/unit/graph/badge.svg?token=4MIM2LRPRD)](https://codecov.io/gh/khaledalam/unit)
 [![PHP Version](https://poser.pugx.org/khaledalam/unit/require/php)](https://packagist.org/packages/khaledalam/unit)
 [![License](https://poser.pugx.org/khaledalam/unit/license)](https://packagist.org/packages/khaledalam/unit)
 
@@ -230,6 +230,7 @@ Runnable scripts live in [`examples/`](examples):
 ```bash
 php examples/basic.php
 php examples/temperature.php
+php examples/parse-and-humanize.php
 php examples/shipping.php
 php examples/physics.php
 ```
@@ -244,7 +245,8 @@ composer analyse   # PHPStan (level max)
 composer cs        # PHP-CS-Fixer (dry run)
 ```
 
-Tests use the `.phpt` format and run through PHPUnit across PHP 8.2, 8.3, and 8.4 in CI.
+The suite combines PHPUnit test classes with `.phpt` scenario tests and holds **100%
+line coverage**, verified on PHP 8.2, 8.3, and 8.4 in CI (PHPStan level max, PSR-12).
 
 ---
 
