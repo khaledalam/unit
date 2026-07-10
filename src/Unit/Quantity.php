@@ -3,8 +3,6 @@
 namespace KhaledAlam\Unit;
 
 use JsonSerializable;
-use KhaledAlam\Unit\UnitRegistry;
-use KhaledAlam\Unit\Unit;
 use Stringable;
 
 final readonly class Quantity implements Stringable, JsonSerializable
@@ -16,7 +14,7 @@ final readonly class Quantity implements Stringable, JsonSerializable
     public function __construct(float $value, Unit $unit, ?int $precision = null)
     {
         if ($precision !== null && $precision < 0) {
-            throw new \InvalidArgumentException("Precision must be >= 0.");
+            throw new \InvalidArgumentException('Precision must be >= 0.');
         }
 
         $this->value = $value;
@@ -41,7 +39,7 @@ final readonly class Quantity implements Stringable, JsonSerializable
         $target = UnitRegistry::get($symbol);
 
         if (!$this->unit->dimension->equals($target->dimension)) {
-            throw new \InvalidArgumentException("Cannot convert: units are dimensionally incompatible.");
+            throw new \InvalidArgumentException('Cannot convert: units are dimensionally incompatible.');
         }
 
         $baseValue = $this->toBase();
@@ -81,7 +79,7 @@ final readonly class Quantity implements Stringable, JsonSerializable
         $value = $this->value * $other->value;
         $newDimension = $this->unit->dimension->multiply($other->unit->dimension);
         $newSymbol = self::combineSymbols($this->unit->symbolString(), $other->unit->symbolString(), '*');
-        $newUnit = new Unit("derived", $newSymbol, 1.0, $newDimension);
+        $newUnit = new Unit('derived', $newSymbol, 1.0, $newDimension);
 
         return new self($value, $newUnit, $this->precision);
     }
@@ -89,13 +87,13 @@ final readonly class Quantity implements Stringable, JsonSerializable
     public function divide(Quantity $other): self
     {
         if ($other->value === 0.0) {
-            throw new \InvalidArgumentException("Cannot divide by a zero quantity.");
+            throw new \InvalidArgumentException('Cannot divide by a zero quantity.');
         }
 
         $value = $this->value / $other->value;
         $newDimension = $this->unit->dimension->divide($other->unit->dimension);
         $newSymbol = self::combineSymbols($this->unit->symbolString(), $other->unit->symbolString(), '/');
-        $newUnit = new Unit("derived", $newSymbol, 1.0, $newDimension);
+        $newUnit = new Unit('derived', $newSymbol, 1.0, $newDimension);
 
         return new self($value, $newUnit, $this->precision);
     }

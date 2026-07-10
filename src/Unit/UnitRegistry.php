@@ -2,8 +2,6 @@
 
 namespace KhaledAlam\Unit;
 
-use KhaledAlam\Unit\Unit;
-
 final class UnitRegistry
 {
     /** @var array<string, Unit> */

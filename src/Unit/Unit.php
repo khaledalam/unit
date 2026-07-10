@@ -2,8 +2,6 @@
 
 namespace KhaledAlam\Unit;
 
-use KhaledAlam\Unit\Dimension;
-use KhaledAlam\Unit\Name;
 use Stringable;
 
 final readonly class Unit implements Stringable

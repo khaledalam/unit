@@ -22,6 +22,7 @@ jobs:
       matrix:
         php-version:
           - '8.2'
+          - '8.3'
           - '8.4'
 
     steps:
@@ -59,3 +60,41 @@ jobs:
           files: ./coverage.xml
           token: ${{ secrets.CODECOV_TOKEN }}
           verbose: true
+
+  static-analysis:
+    name: Static analysis (PHPStan)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v4
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+
+      - name: composer install
+        run: composer install -n --prefer-dist
+
+      - name: Run PHPStan
+        run: ./vendor/bin/phpstan analyse --no-progress
+
+  code-style:
+    name: Code style (PHP-CS-Fixer)
+    runs-on: ubuntu-24.04
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v4
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: none
+
+      - name: composer install
+        run: composer install -n --prefer-dist
+
+      - name: Check code style
+        run: ./vendor/bin/php-cs-fixer fix --dry-run --diff
