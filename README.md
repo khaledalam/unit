@@ -1,24 +1,40 @@
 # Unit
 
-[![Latest Stable Version](https://poser.pugx.org/khaledalam/unit/v)](https://packagist.org/packages/KhaledAlam/Unit)
+[![Latest Stable Version](https://poser.pugx.org/khaledalam/unit/v)](https://packagist.org/packages/khaledalam/unit)
+[![Total Downloads](https://poser.pugx.org/khaledalam/unit/downloads)](https://packagist.org/packages/khaledalam/unit)
 [![Push](https://github.com/KhaledAlam/Unit/actions/workflows/push.yml/badge.svg)](https://github.com/KhaledAlam/Unit/actions/workflows/push.yml)
 [![codecov](https://codecov.io/gh/KhaledAlam/Unit/graph/badge.svg?token=4MIM2LRPRD)](https://codecov.io/gh/KhaledAlam/Unit)
+[![PHP Version](https://poser.pugx.org/khaledalam/unit/require/php)](https://packagist.org/packages/khaledalam/unit)
 [![License](https://poser.pugx.org/khaledalam/unit/license)](https://packagist.org/packages/khaledalam/unit)
 
-### PHP Units & Dimensions Library
+### Type-safe units, quantities & dimensional analysis for PHP
 
-A lightweight, type-safe PHP library for working with **quantities**, **units**, and **dimensional analysis**. Inspired by scientific computing needs, this library lets you define units, register them globally, perform arithmetic with dimension checking, and convert across compatible units.
+A lightweight, **immutable**, type-safe PHP library for working with **quantities**, **units**, and **dimensional analysis**. Define units, convert across compatible ones, and do arithmetic that refuses to add meters to seconds.
+
+```php
+use KhaledAlam\Unit\Quantity;
+
+echo Quantity::of(2, 'm')->add(Quantity::of(100, 'cm'))->to('m'); // "3 m"
+echo Quantity::of(100, '°C')->to('°F')->format(1);                // "212.0 °F"
+echo Quantity::of(4, 'm')->multiply(Quantity::of(3, 'm'));        // "12 m²"
+```
+
+No setup, no registration — common units are ready the moment you install.
 
 ---
 
-## Features
+## Why Unit?
 
-- [x] Immutable objects
-- [x] Dimensionally-aware arithmetic (`add`, `subtract`, `multiply`, `divide`)
-- [x] Automatic conversion between compatible units (e.g., cm to m)
-- [x] Support for compound units (e.g., m/s, kg⋅m²/s²)
-- [x] Enum-powered unit naming (`Name` enum)
-- [x] Custom unit registry
+| | **Unit** | Hand-rolled `* factor` | Raw floats |
+| --- | :---: | :---: | :---: |
+| Blocks nonsensical math (`m + s`) | ✅ | ❌ | ❌ |
+| Auto-converts compatible units | ✅ | ❌ | ❌ |
+| Affine temperature scales (°C/°F/K) | ✅ | ⚠️ easy to get wrong | ❌ |
+| Derived units (`m/s`, `m²`) | ✅ | ❌ | ❌ |
+| Immutable value objects | ✅ | — | ❌ |
+| Zero dependencies | ✅ | ✅ | ✅ |
+
+If you've ever shipped a bug because someone stored centimeters in a "meters" column, this library is for you.
 
 ---
 
@@ -28,123 +44,155 @@ A lightweight, type-safe PHP library for working with **quantities**, **units**,
 composer require khaledalam/unit
 ```
 
+Requires PHP 8.2+.
+
 ---
 
-## Basic Usage
+## Quick start
 
 ```php
 <?php
-// test.php
-
-// __construct(string $name, Name|string $symbol, float $factor, Dimension $dimension)
-
 require __DIR__ . '/vendor/autoload.php';
 
-use KhaledAlam\Unit\Unit;
-use KhaledAlam\Unit\Name;
-use KhaledAlam\Unit\Dimension;
 use KhaledAlam\Unit\Quantity;
-use KhaledAlam\Unit\UnitRegistry;
 
-// Register base units
-UnitRegistry::register(new Unit(Name::M->value, Name::M, 1.0, new Dimension(['L' => 1])));
+// Common units are auto-registered — just use them.
+$length1 = Quantity::of(2.0, 'm');
+$length2 = Quantity::of(100.0, 'cm');
 
-UnitRegistry::register(new Unit(Name::CM->value, Name::CM, 0.01, new Dimension(['L' => 1])));
-
-// Create quantities
-$length1 = Quantity::from(2.0, 'm');
-$length2 = Quantity::from(100.0, 'cm');
-
-// Add quantities (auto conversion)
-$sum = $length1->add($length2); // Result: 3.0 m
-
-echo $sum; // "3 m"
-
-?>
-```
-output:
-```bash
-% php main.php
-3 m
+$sum = $length1->add($length2); // auto-converts cm -> m
+echo $sum->to('m');             // "3 m"
 ```
 
 ---
 
-## Arithmetic Support
+## Features
+
+- ✅ Immutable value objects
+- ✅ Dimensionally-aware arithmetic (`add`, `subtract`, `multiply`, `divide`)
+- ✅ Automatic conversion between compatible units (e.g. cm → m)
+- ✅ **Correct** affine temperature conversion (°C ↔ °F ↔ K)
+- ✅ Derived/compound units rendered as `m/s`, `m²`, `m·s`
+- ✅ Comparisons (`equals`, `isGreaterThan`, `isLessThan`)
+- ✅ `JsonSerializable` output
+- ✅ Enum-powered unit naming and a custom unit registry
+- ✅ Zero runtime dependencies
+
+---
+
+## Usage
+
+### Conversion
 
 ```php
-$velocity = Quantity::from(10, 'm')->divide(Quantity::from(2, 's'));  // 5 m/s
-$area = Quantity::from(2, 'm')->multiply(Quantity::from(3, 'm'));     // 6 m²
+echo Quantity::of(2, 'm')->to('cm');   // "200 cm"
+echo Quantity::of(5, 'km')->to('m');   // "5000 m"
+echo Quantity::of(1, 'h')->to('s');    // "3600 s"
 ```
 
-All operations return new `Quantity` objects with proper dimensions and units.
-
----
-
-## Unit Registration
-
-Define and register your own units:
+### Arithmetic
 
 ```php
-UnitRegistry::register(new Unit('inch', Name::INCH, 0.0254, new Dimension(['L' => 1])));
+$speed = Quantity::of(10, 'm')->divide(Quantity::of(2, 's')); // "5 m/s"
+$area  = Quantity::of(2, 'm')->multiply(Quantity::of(3, 'm')); // "6 m²"
 ```
 
----
+All operations return **new** `Quantity` objects with the proper dimension and unit.
 
-## Exception Handling
-
-Operations on incompatible dimensions will throw an exception:
+### Temperature (affine scales)
 
 ```php
-$mass = Quantity::from(5, 'kg');
-$time = Quantity::from(3, 's');
+echo Quantity::of(100, '°C')->to('°F')->format(1); // "212.0 °F"
+echo Quantity::of(32, '°F')->to('°C')->format(1);  // "0.0 °C"
+echo Quantity::of(25, '°C')->to('K')->format(2);   // "298.15 K"
+```
 
-$mass->add($time); // InvalidArgumentException
+### Comparison
+
+```php
+Quantity::of(1, 'm')->isGreaterThan(Quantity::of(90, 'cm')); // true
+Quantity::of(1, 'm')->equals(Quantity::of(100, 'cm'));       // true
+```
+
+### Precision & formatting
+
+```php
+echo Quantity::of(1, 'm')->divide(Quantity::of(3, 's'))->format(2); // "0.33 m/s"
+```
+
+### JSON
+
+```php
+echo json_encode(Quantity::of(2, 'm')); // {"value":2,"unit":"m"}
+```
+
+### Custom units
+
+Register your own units against a dimension:
+
+```php
+use KhaledAlam\Unit\{Unit, Name, Dimension, UnitRegistry};
+
+UnitRegistry::register(new Unit('yard', 'yd', 0.9144, new Dimension(['L' => 1])));
+
+echo Quantity::of(1, 'yd')->to('m'); // "0.9144 m"
+```
+
+### Incompatible operations throw
+
+```php
+Quantity::of(5, 'kg')->add(Quantity::of(3, 's')); // InvalidArgumentException
 ```
 
 ---
 
-## Running Tests
+## Supported units
 
-This project uses PHP-internal's built-in `run-tests.php` format.
+| Dimension | Units |
+| --- | --- |
+| Length | `mm`, `cm`, `m`, `km`, `in`, `ft` |
+| Mass | `mg`, `g`, `kg` |
+| Time | `s`, `min`, `h` |
+| Area | `cm²`, `m²` |
+| Volume | `mL`, `L`, `m³` |
+| Temperature | `°C`, `°F`, `K` |
+
+Need more? [Open an issue](https://github.com/khaledalam/unit/issues) or register your own.
+
+---
+
+## Examples
+
+Runnable scripts live in [`examples/`](examples):
 
 ```bash
-php run-tests.php tests/ --show-diff
+php examples/basic.php
+php examples/temperature.php
+php examples/shipping.php
+php examples/physics.php
 ```
 
-Or 
+---
+
+## Testing & quality
 
 ```bash
-./vendor/bin/phpunit \
-    --configuration phpunit.xml.dist \
-    --testsuite=unit
+composer test      # PHPUnit
+composer analyse   # PHPStan (level max)
+composer cs        # PHP-CS-Fixer (dry run)
 ```
 
-Each test follows `.phpt` format and validates expected behavior.
+Tests use the `.phpt` format and run through PHPUnit across PHP 8.2, 8.3, and 8.4 in CI.
 
 ---
 
-## Project Structure
+## Contributing
 
-```
-src/
-  └── Unit/
-       ├── Quantity.php
-       ├── Unit.php
-       ├── Dimension.php
-       ├── UnitRegistry.php
-       └── Name.php (enum)
-
-tests/
-  ├── add/
-  ├── convert/
-  ├── divide/
-  └── ...
-```
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[Code of Conduct](CODE_OF_CONDUCT.md). Adding a unit is usually a three-line change.
 
 ---
 
-## About
+## License
 
-Built by **[Khaled Alam](https://khaledalam.net/)** to bring better scientific and data modeling features to PHP developers.
-
+MIT © [Khaled Alam](https://khaledalam.net/)
