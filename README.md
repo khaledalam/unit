@@ -21,6 +21,8 @@ echo Quantity::of(4, 'm')->multiply(Quantity::of(3, 'm'));        // "12 m²"
 
 No setup, no registration — common units are ready the moment you install.
 
+**▶️ [Try the live demo](https://khaledalam.net/unit/)** — an interactive converter running in your browser.
+
 ---
 
 ## Why Unit?
