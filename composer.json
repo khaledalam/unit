@@ -22,6 +22,7 @@
     },
     "autoload": {
         "psr-4": {
+            "KhaledAlam\\Unit\\Laravel\\": "src/Laravel",
             "KhaledAlam\\Unit\\": "src/Unit"
         },
         "files": [
@@ -46,13 +47,24 @@
     "require-dev": {
         "phpunit/phpunit": "^11.4",
         "phpstan/phpstan": "^2.0",
-        "friendsofphp/php-cs-fixer": "^3.64"
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "illuminate/database": "^11.0 || ^12.0"
+    },
+    "suggest": {
+        "illuminate/database": "For the Laravel service provider and Eloquent 'AsQuantity' cast."
     },
     "scripts": {
         "test": "phpunit --configuration phpunit.xml.dist --testsuite=unit",
         "analyse": "phpstan analyse",
         "cs": "php-cs-fixer fix --dry-run --diff",
         "cs-fix": "php-cs-fixer fix"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "KhaledAlam\\Unit\\Laravel\\UnitServiceProvider"
+            ]
+        }
     },
     "config": {
         "sort-packages": true

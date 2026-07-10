@@ -34,6 +34,31 @@ final readonly class Quantity implements Stringable, JsonSerializable
         return self::from($value, $symbol, $precision);
     }
 
+    /**
+     * Parse a human-readable string into a Quantity.
+     *
+     * Supports single values ("100 km/h", "-40 °C") and multi-segment inputs of
+     * the same dimension ("5 ft 3 in"), which are summed. The result is expressed
+     * in the first segment's unit.
+     *
+     * @throws \InvalidArgumentException on empty input, unknown units, or mixed dimensions.
+     */
+    public static function parse(string $input, ?int $precision = null): self
+    {
+        if (!preg_match_all('/([+-]?\d+(?:\.\d+)?)\s*([^\s\d]+)/u', $input, $matches, PREG_SET_ORDER)) {
+            throw new \InvalidArgumentException("Could not parse a quantity from: \"{$input}\".");
+        }
+
+        $result = null;
+        foreach ($matches as [, $value, $symbol]) {
+            $part = self::from((float) $value, $symbol);
+            $result = $result === null ? $part : $result->add($part);
+        }
+
+        /** @var self $result */
+        return $precision === null ? $result : $result->withPrecision($precision);
+    }
+
     public function convertTo(string $symbol): self
     {
         $target = UnitRegistry::get($symbol);
@@ -96,6 +121,60 @@ final readonly class Quantity implements Stringable, JsonSerializable
         $newUnit = new Unit('derived', $newSymbol, 1.0, $newDimension);
 
         return new self($value, $newUnit, $this->precision);
+    }
+
+    /**
+     * Convert to the most readable unit in the same family (e.g. 1500 m -> 1.5 km).
+     *
+     * Picks the largest ladder unit whose value stays >= 1. Returns the quantity
+     * unchanged when it has no ladder or uses an affine scale (e.g. temperature).
+     */
+    public function humanize(): self
+    {
+        if ($this->unit->offset !== 0.0) {
+            return $this;
+        }
+
+        foreach (self::humanizeLadders() as $symbols) {
+            if (!UnitRegistry::has($symbols[0])) {
+                continue;
+            }
+            if (!UnitRegistry::get($symbols[0])->dimension->equals($this->unit->dimension)) {
+                continue;
+            }
+
+            $base = $this->toBase();
+            $chosen = $symbols[0];
+            foreach ($symbols as $symbol) {
+                $candidate = UnitRegistry::get($symbol);
+                if (abs($base / $candidate->factor) >= 1.0) {
+                    $chosen = $symbol;
+                } else {
+                    break;
+                }
+            }
+
+            return $this->convertTo($chosen);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Ladders of unit symbols (smallest to largest) used by {@see self::humanize()}.
+     *
+     * @return list<list<string>>
+     */
+    private static function humanizeLadders(): array
+    {
+        return [
+            ['mm', 'cm', 'm', 'km'],
+            ['mg', 'g', 'kg', 't'],
+            ['ms', 's', 'min', 'h', 'd'],
+            ['mL', 'L', 'm³'],
+            ['cm²', 'm²', 'km²'],
+            ['B', 'KB', 'MB', 'GB', 'TB'],
+        ];
     }
 
     /** Compares two quantities after converting to a common base. */

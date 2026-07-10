@@ -4,39 +4,106 @@ namespace KhaledAlam\Unit;
 
 enum Name: string
 {
-    // Length units
-    case MM = 'mm';       // millimeter
-    case CM = 'cm';       // centimeter
-    case M = 'm';         // meter
-    case KM = 'km';       // kilometer
-    case INCH = 'in';     // inch
-    case FT = 'ft';       // foot
+    // Length
+    case MM = 'mm';
+    case CM = 'cm';
+    case M = 'm';
+    case KM = 'km';
+    case INCH = 'in';
+    case FT = 'ft';
+    case YD = 'yd';
+    case MI = 'mi';
 
-    // Mass units
-    case G = 'g';         // gram
-    case KG = 'kg';       // kilogram
-    case MG = 'mg';       // milligram
+    // Mass
+    case MG = 'mg';
+    case G = 'g';
+    case KG = 'kg';
+    case TON = 't';
+    case LB = 'lb';
+    case OZ = 'oz';
 
-    // Time units
-    case S = 's';         // second
-    case MIN = 'min';     // minute
-    case H = 'h';         // hour
+    // Time
+    case MS = 'ms';
+    case S = 's';
+    case MIN = 'min';
+    case H = 'h';
+    case DAY = 'd';
+    case WK = 'wk';
 
-    // Area units
-    case M2 = 'm²';
+    // Area
     case CM2 = 'cm²';
+    case M2 = 'm²';
+    case KM2 = 'km²';
+    case FT2 = 'ft²';
+    case HA = 'ha';
+    case ACRE = 'acre';
 
-    // Volume units
-    case L = 'L';         // liter
-    case ML = 'mL';       // milliliter
+    // Volume
+    case ML = 'mL';
+    case L = 'L';
     case M3 = 'm³';
+    case GAL = 'gal';
 
-    // Temperature units (if supported)
+    // Temperature
     case C = '°C';
     case F = '°F';
     case K = 'K';
 
-    // Helper: full unit name
+    // Speed
+    case MPS = 'm/s';
+    case KMH = 'km/h';
+    case MPH = 'mph';
+    case KNOT = 'kn';
+
+    // Data
+    case BIT = 'bit';
+    case BYTE = 'B';
+    case KB = 'KB';
+    case MB = 'MB';
+    case GB = 'GB';
+    case TB = 'TB';
+    case KIB = 'KiB';
+    case MIB = 'MiB';
+    case GIB = 'GiB';
+    case TIB = 'TiB';
+
+    // Force
+    case N = 'N';
+    case KN = 'kN';
+
+    // Energy
+    case J = 'J';
+    case KJ = 'kJ';
+    case CAL = 'cal';
+    case KCAL = 'kcal';
+    case WH = 'Wh';
+    case KWH = 'kWh';
+
+    // Power
+    case W = 'W';
+    case KW = 'kW';
+    case HP = 'hp';
+
+    // Pressure
+    case PA = 'Pa';
+    case KPA = 'kPa';
+    case BAR = 'bar';
+    case ATM = 'atm';
+    case PSI = 'psi';
+
+    // Frequency
+    case HZ = 'Hz';
+    case KHZ = 'kHz';
+    case MHZ = 'MHz';
+    case GHZ = 'GHz';
+
+    // Angle
+    case RAD = 'rad';
+    case DEG = 'deg';
+    case GRAD = 'grad';
+    case TURN = 'turn';
+
+    /** Human-readable name for the unit. */
     public function label(): string
     {
         return match ($this) {
@@ -46,25 +113,84 @@ enum Name: string
             self::KM => 'Kilometer',
             self::INCH => 'Inch',
             self::FT => 'Foot',
+            self::YD => 'Yard',
+            self::MI => 'Mile',
 
+            self::MG => 'Milligram',
             self::G => 'Gram',
             self::KG => 'Kilogram',
-            self::MG => 'Milligram',
+            self::TON => 'Tonne',
+            self::LB => 'Pound',
+            self::OZ => 'Ounce',
 
+            self::MS => 'Millisecond',
             self::S => 'Second',
             self::MIN => 'Minute',
             self::H => 'Hour',
+            self::DAY => 'Day',
+            self::WK => 'Week',
 
-            self::M2 => 'Square Meter',
             self::CM2 => 'Square Centimeter',
+            self::M2 => 'Square Meter',
+            self::KM2 => 'Square Kilometer',
+            self::FT2 => 'Square Foot',
+            self::HA => 'Hectare',
+            self::ACRE => 'Acre',
 
-            self::L => 'Liter',
             self::ML => 'Milliliter',
+            self::L => 'Liter',
             self::M3 => 'Cubic Meter',
+            self::GAL => 'Gallon (US)',
 
             self::C => 'Celsius',
             self::F => 'Fahrenheit',
             self::K => 'Kelvin',
+
+            self::MPS => 'Meter per second',
+            self::KMH => 'Kilometer per hour',
+            self::MPH => 'Mile per hour',
+            self::KNOT => 'Knot',
+
+            self::BIT => 'Bit',
+            self::BYTE => 'Byte',
+            self::KB => 'Kilobyte',
+            self::MB => 'Megabyte',
+            self::GB => 'Gigabyte',
+            self::TB => 'Terabyte',
+            self::KIB => 'Kibibyte',
+            self::MIB => 'Mebibyte',
+            self::GIB => 'Gibibyte',
+            self::TIB => 'Tebibyte',
+
+            self::N => 'Newton',
+            self::KN => 'Kilonewton',
+
+            self::J => 'Joule',
+            self::KJ => 'Kilojoule',
+            self::CAL => 'Calorie',
+            self::KCAL => 'Kilocalorie',
+            self::WH => 'Watt-hour',
+            self::KWH => 'Kilowatt-hour',
+
+            self::W => 'Watt',
+            self::KW => 'Kilowatt',
+            self::HP => 'Horsepower',
+
+            self::PA => 'Pascal',
+            self::KPA => 'Kilopascal',
+            self::BAR => 'Bar',
+            self::ATM => 'Atmosphere',
+            self::PSI => 'Pound per square inch',
+
+            self::HZ => 'Hertz',
+            self::KHZ => 'Kilohertz',
+            self::MHZ => 'Megahertz',
+            self::GHZ => 'Gigahertz',
+
+            self::RAD => 'Radian',
+            self::DEG => 'Degree',
+            self::GRAD => 'Gradian',
+            self::TURN => 'Turn',
         };
     }
 }
