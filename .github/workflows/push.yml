@@ -54,7 +54,7 @@ jobs:
             --testsuite=unit \
             --coverage-clover ./coverage.xml
 
-      - uses: codecov/codecov-action@v5
+      - uses: codecov/codecov-action@v7
         if: matrix.php-version == '8.2'
         with:
           files: ./coverage.xml
