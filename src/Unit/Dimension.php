@@ -4,10 +4,16 @@ namespace KhaledAlam\Unit;
 
 final readonly class Dimension
 {
+    /** @var array<string, int> */
     public array $exponents;
 
+    /**
+     * @param array<string, int> $exponents Map of base-dimension symbol (e.g. "L") to its exponent.
+     */
     public function __construct(array $exponents = [])
     {
+        // Drop zero exponents so cancelled dimensions compare equal (e.g. m/s·s === m).
+        $exponents = array_filter($exponents, static fn (int $exp): bool => $exp !== 0);
         ksort($exponents);
         $this->exponents = $exponents;
     }
@@ -35,8 +41,13 @@ final readonly class Dimension
         return new Dimension($result);
     }
 
+    public function isDimensionless(): bool
+    {
+        return $this->exponents === [];
+    }
+
     public function __toString(): string
     {
-        return json_encode($this->exponents);
+        return json_encode($this->exponents) ?: '{}';
     }
 }

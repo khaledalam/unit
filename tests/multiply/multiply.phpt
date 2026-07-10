@@ -21,4 +21,4 @@ $result = $q1->multiply($q2);
 echo $result->getValue() . ' ' . $result->getUnit()->symbol . "\n";
 ?>
 --EXPECT--
-6 m*s
+6 m·s

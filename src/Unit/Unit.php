@@ -2,8 +2,6 @@
 
 namespace KhaledAlam\Unit;
 
-use KhaledAlam\Unit\Dimension; 
-use KhaledAlam\Unit\Name;
 use Stringable;
 
 final readonly class Unit implements Stringable
@@ -13,11 +11,20 @@ final readonly class Unit implements Stringable
     public float $factor;
     public Dimension $dimension;
 
+    /**
+     * @param string      $name      Human-readable name (e.g. "Meter").
+     * @param Name|string $symbol    Display symbol (enum case, or raw string for derived units).
+     * @param float       $factor    Multiplicative factor to the dimension's base unit.
+     * @param Dimension   $dimension Physical dimension of the unit.
+     * @param float       $offset    Additive offset to the base unit, applied after $factor.
+     *                               Needed for affine scales such as °C and °F.
+     */
     public function __construct(
         string $name,
         Name|string $symbol,
         float $factor,
-        Dimension $dimension
+        Dimension $dimension,
+        public float $offset = 0.0,
     ) {
         $this->name = $name;
         $this->symbol = $symbol;
@@ -25,8 +32,15 @@ final readonly class Unit implements Stringable
         $this->dimension = $dimension;
     }
 
+    public function symbolString(): string
+    {
+        return $this->symbol instanceof Name
+            ? $this->symbol->value
+            : (string) $this->symbol;
+    }
+
     public function __toString(): string
     {
-        return $this->symbol->__toString();
+        return $this->symbolString();
     }
 }
