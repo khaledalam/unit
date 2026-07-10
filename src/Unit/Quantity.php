@@ -123,6 +123,60 @@ final readonly class Quantity implements Stringable, JsonSerializable
         return new self($value, $newUnit, $this->precision);
     }
 
+    /**
+     * Convert to the most readable unit in the same family (e.g. 1500 m -> 1.5 km).
+     *
+     * Picks the largest ladder unit whose value stays >= 1. Returns the quantity
+     * unchanged when it has no ladder or uses an affine scale (e.g. temperature).
+     */
+    public function humanize(): self
+    {
+        if ($this->unit->offset !== 0.0) {
+            return $this;
+        }
+
+        foreach (self::humanizeLadders() as $symbols) {
+            if (!UnitRegistry::has($symbols[0])) {
+                continue;
+            }
+            if (!UnitRegistry::get($symbols[0])->dimension->equals($this->unit->dimension)) {
+                continue;
+            }
+
+            $base = $this->toBase();
+            $chosen = $symbols[0];
+            foreach ($symbols as $symbol) {
+                $candidate = UnitRegistry::get($symbol);
+                if (abs($base / $candidate->factor) >= 1.0) {
+                    $chosen = $symbol;
+                } else {
+                    break;
+                }
+            }
+
+            return $this->convertTo($chosen);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Ladders of unit symbols (smallest to largest) used by {@see self::humanize()}.
+     *
+     * @return list<list<string>>
+     */
+    private static function humanizeLadders(): array
+    {
+        return [
+            ['mm', 'cm', 'm', 'km'],
+            ['mg', 'g', 'kg', 't'],
+            ['ms', 's', 'min', 'h', 'd'],
+            ['mL', 'L', 'm³'],
+            ['cm²', 'm²', 'km²'],
+            ['B', 'KB', 'MB', 'GB', 'TB'],
+        ];
+    }
+
     /** Compares two quantities after converting to a common base. */
     public function equals(Quantity $other, float $epsilon = 1e-9): bool
     {
