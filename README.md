@@ -75,8 +75,10 @@ echo $sum->to('m');             // "3 m"
 - ✅ Automatic conversion between compatible units (e.g. cm → m)
 - ✅ **Correct** affine temperature conversion (°C ↔ °F ↔ K)
 - ✅ Derived/compound units rendered as `m/s`, `m²`, `m·s`
+- ✅ Scalar math (`times`, `dividedBy`, `pow`, `sqrt`, `abs`, `negate`)
+- ✅ Named dimensions (`dimensionName()` → `"velocity"`)
 - ✅ Comparisons (`equals`, `isGreaterThan`, `isLessThan`)
-- ✅ `JsonSerializable` output
+- ✅ `JsonSerializable` output, Laravel cast & Doctrine type
 - ✅ Enum-powered unit naming and a custom unit registry
 - ✅ Zero runtime dependencies
 
@@ -100,6 +102,24 @@ $area  = Quantity::of(2, 'm')->multiply(Quantity::of(3, 'm')); // "6 m²"
 ```
 
 All operations return **new** `Quantity` objects with the proper dimension and unit.
+
+### Scalar math
+
+```php
+echo Quantity::of(5, 'm')->times(3);      // "15 m"
+echo Quantity::of(10, 'm')->dividedBy(4); // "2.5 m"
+echo Quantity::of(2, 'm')->pow(2);        // "4 m²"
+echo Quantity::of(4, 'm²')->sqrt();       // "2 m"
+echo Quantity::of(-3, 'm')->abs();        // "3 m"
+```
+
+### Dimension names
+
+```php
+Quantity::of(1, 'm/s')->dimensionName(); // "velocity"
+Quantity::of(1, 'N')->dimensionName();   // "force"
+Quantity::of(1, 'Pa')->dimensionName();  // "pressure"
+```
 
 ### Temperature (affine scales)
 
@@ -223,6 +243,32 @@ return [
 
 ---
 
+## Symfony / Doctrine integration
+
+A Doctrine DBAL type persists a `Quantity` as a string column. Register it once, then
+map any column with it:
+
+```php
+use Doctrine\DBAL\Types\Type;
+use KhaledAlam\Unit\Doctrine\QuantityType;
+
+Type::addType(QuantityType::NAME, QuantityType::class); // e.g. in a bundle boot / bootstrap
+```
+
+```php
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Column(type: 'quantity', nullable: true)]
+public ?Quantity $weight = null;
+```
+
+Strings assigned to the property are parsed on write, and the column hydrates back into a
+`Quantity` on read.
+
+> Requires `doctrine/dbal` ^4.
+
+---
+
 ## Examples
 
 Runnable scripts live in [`examples/`](examples):
@@ -231,6 +277,7 @@ Runnable scripts live in [`examples/`](examples):
 php examples/basic.php
 php examples/temperature.php
 php examples/parse-and-humanize.php
+php examples/scalar-math.php
 php examples/shipping.php
 php examples/physics.php
 ```

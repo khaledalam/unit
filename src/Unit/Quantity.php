@@ -123,6 +123,65 @@ final readonly class Quantity implements Stringable, JsonSerializable
         return new self($value, $newUnit, $this->precision);
     }
 
+    /** Scale the value by a plain number, keeping the same unit. */
+    public function times(float $factor): self
+    {
+        return new self($this->value * $factor, $this->unit, $this->precision);
+    }
+
+    /** Divide the value by a plain number, keeping the same unit. */
+    public function dividedBy(float $divisor): self
+    {
+        if ($divisor === 0.0) {
+            throw new \InvalidArgumentException('Cannot divide by zero.');
+        }
+
+        return new self($this->value / $divisor, $this->unit, $this->precision);
+    }
+
+    public function abs(): self
+    {
+        return new self(abs($this->value), $this->unit, $this->precision);
+    }
+
+    public function negate(): self
+    {
+        return new self(-$this->value, $this->unit, $this->precision);
+    }
+
+    /** Raise to an integer power, scaling the dimension accordingly (e.g. (2 m)² = 4 m²). */
+    public function pow(int $exponent): self
+    {
+        $value = $this->value ** $exponent;
+        $dimension = $this->unit->dimension->power($exponent);
+        $symbol = self::powerSymbol($this->unit->symbolString(), $exponent);
+
+        return new self($value, new Unit('derived', $symbol, 1.0, $dimension), $this->precision);
+    }
+
+    /**
+     * Square root, halving the dimension (e.g. sqrt(4 m²) = 2 m).
+     *
+     * @throws \InvalidArgumentException on a negative value or an odd dimension.
+     */
+    public function sqrt(): self
+    {
+        if ($this->value < 0.0) {
+            throw new \InvalidArgumentException('Cannot take the square root of a negative quantity.');
+        }
+
+        $dimension = $this->unit->dimension->root(2);
+        $symbol = self::rootSymbol($this->unit->symbolString());
+
+        return new self(sqrt($this->value), new Unit('derived', $symbol, 1.0, $dimension), $this->precision);
+    }
+
+    /** Name of this quantity's physical dimension (e.g. "velocity"), or null if unrecognized. */
+    public function dimensionName(): ?string
+    {
+        return $this->unit->dimension->name();
+    }
+
     /**
      * Convert to the most readable unit in the same family (e.g. 1500 m -> 1.5 km).
      *
@@ -243,6 +302,26 @@ final readonly class Quantity implements Stringable, JsonSerializable
 
         // Division: identical symbols cancel to a dimensionless quantity.
         return $a === $b ? '' : $a . '/' . $b;
+    }
+
+    private static function powerSymbol(string $symbol, int $exponent): string
+    {
+        return match ($exponent) {
+            0 => '',
+            1 => $symbol,
+            2 => $symbol === '' ? '' : $symbol . '²',
+            3 => $symbol === '' ? '' : $symbol . '³',
+            default => $symbol === '' ? '' : $symbol . '^' . $exponent,
+        };
+    }
+
+    private static function rootSymbol(string $symbol): string
+    {
+        if (str_ends_with($symbol, '²')) {
+            return substr($symbol, 0, -strlen('²'));
+        }
+
+        return $symbol === '' ? '' : '√' . $symbol;
     }
 
     /** @return array{value: float, unit: string} */
