@@ -109,6 +109,22 @@ echo Quantity::of(32, '°F')->to('°C')->format(1);  // "0.0 °C"
 echo Quantity::of(25, '°C')->to('K')->format(2);   // "298.15 K"
 ```
 
+### Parsing strings
+
+```php
+echo Quantity::parse('100 km/h')->to('mph')->format(2); // "62.14 mph"
+echo Quantity::parse('-40 °C')->to('°F')->format(1);    // "-40.0 °F"
+echo Quantity::parse('5 ft 3 in')->to('cm')->format(2); // "160.02 cm"  (segments summed)
+```
+
+### Humanize (auto-pick the best unit)
+
+```php
+echo Quantity::of(1500, 'm')->humanize();        // "1.5 km"
+echo Quantity::of(2500000, 'B')->humanize();     // "2.5 MB"
+echo Quantity::of(5400, 's')->humanize();        // "1.5 h"
+```
+
 ### Comparison
 
 ```php
@@ -152,14 +168,58 @@ Quantity::of(5, 'kg')->add(Quantity::of(3, 's')); // InvalidArgumentException
 
 | Dimension | Units |
 | --- | --- |
-| Length | `mm`, `cm`, `m`, `km`, `in`, `ft` |
-| Mass | `mg`, `g`, `kg` |
-| Time | `s`, `min`, `h` |
-| Area | `cm²`, `m²` |
-| Volume | `mL`, `L`, `m³` |
+| Length | `mm`, `cm`, `m`, `km`, `in`, `ft`, `yd`, `mi` |
+| Mass | `mg`, `g`, `kg`, `t`, `lb`, `oz` |
+| Time | `ms`, `s`, `min`, `h`, `d`, `wk` |
+| Area | `cm²`, `m²`, `km²`, `ft²`, `ha`, `acre` |
+| Volume | `mL`, `L`, `m³`, `gal` |
 | Temperature | `°C`, `°F`, `K` |
+| Speed | `m/s`, `km/h`, `mph`, `kn` |
+| Data | `bit`, `B`, `KB`, `MB`, `GB`, `TB`, `KiB`, `MiB`, `GiB`, `TiB` |
+| Force | `N`, `kN` |
+| Energy | `J`, `kJ`, `cal`, `kcal`, `Wh`, `kWh` |
+| Power | `W`, `kW`, `hp` |
+| Pressure | `Pa`, `kPa`, `bar`, `atm`, `psi` |
+| Frequency | `Hz`, `kHz`, `MHz`, `GHz` |
+| Angle | `rad`, `deg`, `grad`, `turn` |
 
 Need more? [Open an issue](https://github.com/khaledalam/unit/issues) or register your own.
+
+---
+
+## Laravel integration
+
+The package ships a service provider (auto-discovered) and an Eloquent cast. Store a
+quantity in a single column and get a `Quantity` back on access:
+
+```php
+use Illuminate\Database\Eloquent\Model;
+use KhaledAlam\Unit\Laravel\AsQuantity;
+
+class Parcel extends Model
+{
+    protected function casts(): array
+    {
+        return ['weight' => AsQuantity::class];
+    }
+}
+
+$parcel->weight = Quantity::of(2.5, 'kg'); // stored as "2.5 kg"
+$parcel->weight->to('g');                   // 2500 g
+$parcel->weight = '5 ft 3 in';              // strings are parsed on the way in
+```
+
+Register app-specific units via `config/unit.php`:
+
+```php
+return [
+    'units' => [
+        new \KhaledAlam\Unit\Unit('furlong', 'fur', 201.168, new \KhaledAlam\Unit\Dimension(['L' => 1])),
+    ],
+];
+```
+
+> Requires `illuminate/database` (already present in any Laravel app).
 
 ---
 

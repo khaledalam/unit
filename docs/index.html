@@ -172,14 +172,26 @@
 <script>
 // Mirror of src/Unit/bootstrap.php — factor to base, plus affine offset for temperature.
 const DIMS = {
-  Length: { base:'m', units:{ mm:[0.001,0], cm:[0.01,0], m:[1,0], km:[1000,0], in:[0.0254,0], ft:[0.3048,0] } },
-  Mass:   { base:'kg', units:{ mg:[1e-6,0], g:[0.001,0], kg:[1,0] } },
-  Time:   { base:'s', units:{ s:[1,0], min:[60,0], h:[3600,0] } },
-  Area:   { base:'m²', units:{ 'cm²':[0.0001,0], 'm²':[1,0] } },
-  Volume: { base:'m³', units:{ mL:[1e-6,0], L:[0.001,0], 'm³':[1,0] } },
-  Temperature:{ base:'K', units:{ '°C':[1,273.15], '°F':[5/9, 273.15-(32*5/9)], K:[1,0] } },
+  Length: { units:{ mm:[0.001,0], cm:[0.01,0], m:[1,0], km:[1000,0], in:[0.0254,0], ft:[0.3048,0], yd:[0.9144,0], mi:[1609.344,0] } },
+  Mass:   { units:{ mg:[1e-6,0], g:[0.001,0], kg:[1,0], t:[1000,0], lb:[0.45359237,0], oz:[0.028349523125,0] } },
+  Time:   { units:{ ms:[0.001,0], s:[1,0], min:[60,0], h:[3600,0], d:[86400,0], wk:[604800,0] } },
+  Area:   { units:{ 'cm²':[0.0001,0], 'm²':[1,0], 'km²':[1e6,0], 'ft²':[0.09290304,0], ha:[10000,0], acre:[4046.8564224,0] } },
+  Volume: { units:{ mL:[1e-6,0], L:[0.001,0], 'm³':[1,0], gal:[0.003785411784,0] } },
+  Temperature:{ units:{ '°C':[1,273.15], '°F':[5/9, 273.15-(32*5/9)], K:[1,0] } },
+  Speed:  { units:{ 'm/s':[1,0], 'km/h':[1000/3600,0], mph:[0.44704,0], kn:[1852/3600,0] } },
+  Data:   { units:{ bit:[0.125,0], B:[1,0], KB:[1e3,0], MB:[1e6,0], GB:[1e9,0], TB:[1e12,0], KiB:[1024,0], MiB:[1024**2,0], GiB:[1024**3,0], TiB:[1024**4,0] } },
+  Force:  { units:{ N:[1,0], kN:[1000,0] } },
+  Energy: { units:{ J:[1,0], kJ:[1000,0], cal:[4.184,0], kcal:[4184,0], Wh:[3600,0], kWh:[3.6e6,0] } },
+  Power:  { units:{ W:[1,0], kW:[1000,0], hp:[745.6998715822702,0] } },
+  Pressure:{ units:{ Pa:[1,0], kPa:[1000,0], bar:[1e5,0], atm:[101325,0], psi:[6894.757293168361,0] } },
+  Frequency:{ units:{ Hz:[1,0], kHz:[1e3,0], MHz:[1e6,0], GHz:[1e9,0] } },
+  Angle:  { units:{ rad:[1,0], deg:[Math.PI/180,0], grad:[Math.PI/200,0], turn:[2*Math.PI,0] } },
 };
-const DEFAULTS = { Length:['m','cm'], Mass:['kg','g'], Time:['h','s'], Area:['m²','cm²'], Volume:['L','mL'], Temperature:['°C','°F'] };
+const DEFAULTS = {
+  Length:['m','cm'], Mass:['kg','g'], Time:['h','s'], Area:['m²','cm²'], Volume:['L','mL'],
+  Temperature:['°C','°F'], Speed:['km/h','mph'], Data:['GB','MB'], Force:['kN','N'],
+  Energy:['kWh','J'], Power:['hp','kW'], Pressure:['atm','psi'], Frequency:['GHz','MHz'], Angle:['deg','rad'],
+};
 
 const $ = id => document.getElementById(id);
 let dim = 'Length';

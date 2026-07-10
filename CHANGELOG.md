@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **String parsing** — `Quantity::parse('100 km/h')`, `Quantity::parse('5 ft 3 in')`
+  (multi-segment inputs of the same dimension are summed).
+- **`Quantity::humanize()`** — auto-selects the most readable unit (e.g. `1500 m` → `1.5 km`).
+- **Many more units** — speed (`km/h`, `mph`, `kn`), data (`KB`…`TiB`, `bit`), force (`N`),
+  energy (`J`, `kWh`, `cal`), power (`W`, `hp`), pressure (`Pa`, `bar`, `psi`), frequency
+  (`Hz`…`GHz`), angle (`rad`, `deg`), plus more length/mass/time/area/volume units.
+- **Laravel integration** — auto-discovered `UnitServiceProvider` and an Eloquent
+  `AsQuantity` cast; register custom units via `config/unit.php`.
+
 ## [1.1.0] - 2026-07-10
 
 ### Added
