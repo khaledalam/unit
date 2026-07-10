@@ -4,6 +4,19 @@ All notable changes to this project are documented here. The format is based on
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres
 to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- Full PHPUnit test suite alongside the `.phpt` tests; **100% line coverage**.
+
+### Changed
+- Default unit registration moved from the autoload shim into a testable
+  `DefaultUnits::register()` class.
+
+### Fixed
+- `humanize()` no longer throws when the registry is only partially populated;
+  it now skips ladder units that are not registered.
+
 ## [1.2.0] - 2026-07-10
 
 ### Added
